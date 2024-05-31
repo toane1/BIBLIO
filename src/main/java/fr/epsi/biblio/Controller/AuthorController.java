@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/authors")
@@ -33,6 +34,19 @@ public class AuthorController {
     public ResponseEntity<Author> createAuthor(
             @RequestBody Author author) {
         return ResponseEntity.ok(authorService.createAuthor(author));
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
+        return authorService.updateAuthor(id, author)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Author> patchAuthor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return authorService.patchAuthor(id, updates)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

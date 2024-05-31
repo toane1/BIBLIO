@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -26,7 +26,29 @@ public class AuthorService {
     public Author createAuthor(Author author) {
         return authorRepository.save(author);
     }
+    public Optional<Author> updateAuthor(Long id, Author updatedAuthor) {
+        return authorRepository.findById(id).map(author -> {
+            author.setFirstName(updatedAuthor.getFirstName());
+            author.setLastName(updatedAuthor.getLastName());
+            return authorRepository.save(author);
+        });
+    }
 
+    public Optional<Author> patchAuthor(Long id, Map<String, Object> updates) {
+        return authorRepository.findById(id).map(author -> {
+            updates.forEach((key, value) -> {
+                switch (key) {
+                    case "lastName":
+                        author.setLastName((String) value);
+                        break;
+                    case "firstName":
+                        author.setFirstName((String) value);
+                        break;
+                }
+            });
+            return authorRepository.save(author);
+        });
+    }
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
     }

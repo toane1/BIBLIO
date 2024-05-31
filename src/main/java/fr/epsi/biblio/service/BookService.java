@@ -3,17 +3,14 @@ package fr.epsi.biblio.service;
 
 import fr.epsi.biblio.entity.Book;
 import fr.epsi.biblio.entity.Genre;
+import fr.epsi.biblio.repository.AuthorRepository;
 import fr.epsi.biblio.repository.BookRepository;
 import fr.epsi.biblio.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.*;
 
 @Service
 public class BookService {
@@ -23,7 +20,7 @@ public class BookService {
     @Autowired
     private GenreRepository genreRepository;
     @Autowired
-    private UserService userService;
+    private AuthorRepository authorRepository;
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
@@ -35,6 +32,44 @@ public class BookService {
     public List<Book> findByGenreId(Long genreId) {
         Set<Genre> genres = (Set<Genre>) genreRepository.findByGenreId(genreId);
         return bookRepository.findBookByGenres(genres);
+    }
+    public Optional<Book> updateBook(Long id, Book updatedBook) {
+        return bookRepository.findById(id).map(book -> {
+            book.setAuthor(updatedBook.getAuthor());
+            book.setGenres(updatedBook.getGenres());
+            book.setIsbn(updatedBook.getIsbn());
+            book.setTitle(updatedBook.getTitle());
+            book.setPublicationDate(updatedBook.getPublicationDate());
+            return bookRepository.save(book);
+        });
+    }
+
+    public Optional<Book> patchBook(Long id, Map<String, Object> updates) {
+        return bookRepository.findById(id).map(book -> {
+            updates.forEach((key, value) -> {
+                switch (key) {
+                    case "isbn":
+                        book.setIsbn((String) value);
+                        break;
+                    case "title":
+                        book.setTitle((String) value);
+                        break;
+                    case "author":
+                        Long authorId = ((Number) value).longValue();
+                        authorRepository.findById(authorId).ifPresent(book::setAuthor);
+                        break;
+                    case "genres":
+                        Set<Long> genreIds = (Set<Long>) value;
+                        Set<Genre> genres = new HashSet<>(genreRepository.findAllById(genreIds));
+                        book.setGenres(genres);
+                        break;
+                    case "publicationDate":
+                        book.setPublicationDate((String) value);
+                        break;
+                }
+            });
+            return bookRepository.save(book);
+        });
     }
 
     public Book createBook(Book book) {

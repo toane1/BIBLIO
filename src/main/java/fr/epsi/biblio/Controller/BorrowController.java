@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/borrows")
 public class BorrowController {
@@ -29,7 +31,19 @@ public class BorrowController {
     public Borrow createBorrow(@RequestBody Borrow borrow) {
         return borrowService.createBorrow(borrow);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Borrow> updateBorrow(@PathVariable Long id, @RequestBody Borrow borrow) {
+        return borrowService.updateBorrow(id, borrow)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Borrow> patchBorrow(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return borrowService.patchBorrow(id, updates)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBorrow(@PathVariable Long id) {
         borrowService.deleteBorrow(id);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 public class GenreService {
@@ -22,6 +22,24 @@ public class GenreService {
 
     public Optional<Genre> getGenreById(Long id) {
         return genreRepository.findById(id);
+    }
+
+    public Optional<Genre> updateGenre(Long id, Genre updatedGenre) {
+        return genreRepository.findById(id).map(genre -> {
+            genre.setGenre(updatedGenre.getGenre());
+            return genreRepository.save(genre);
+        });
+    }
+
+    public Optional<Genre> patchGenre(Long id, Map<String, Object> updates) {
+        return genreRepository.findById(id).map(genre -> {
+            updates.forEach((key, value) -> {
+                if ("genre".equals(key)) {
+                    genre.setGenre((String) value);
+                }
+            });
+            return genreRepository.save(genre);
+        });
     }
 
     public Genre createGenre(Genre genre) {

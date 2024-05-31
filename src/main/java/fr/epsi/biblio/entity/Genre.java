@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 
 public class Genre {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long genreId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long genreId;
 
     private String genre;
 }
