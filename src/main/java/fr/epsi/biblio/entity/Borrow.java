@@ -15,7 +15,7 @@ public class Borrow {
     private User user;
 
     @ManyToOne
-    private Book book;
+    private Copy copy;
 
     private boolean givenBack;
 }

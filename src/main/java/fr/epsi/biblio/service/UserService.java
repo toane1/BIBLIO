@@ -1,9 +1,9 @@
 package fr.epsi.biblio.service;
 
-import fr.epsi.biblio.entity.Book;
+import fr.epsi.biblio.entity.Copy;
 import fr.epsi.biblio.entity.Role;
 import fr.epsi.biblio.entity.User;
-import fr.epsi.biblio.repository.BookRepository;
+import fr.epsi.biblio.repository.CopyRepository;
 import fr.epsi.biblio.repository.RoleRepository;
 import fr.epsi.biblio.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
-    private BookRepository bookRepository;
+    private CopyRepository copyRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -56,7 +55,7 @@ public class UserService {
             user.setEmail(updatedUser.getEmail());
             user.setPhone(updatedUser.getPhone());
             user.setRoles(updatedUser.getRoles());
-            user.setBooks(updatedUser.getBooks());
+            user.setCopys(updatedUser.getCopys());
             return userRepository.save(user);
         });
     }
@@ -88,10 +87,10 @@ public class UserService {
                         Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
                         user.setRoles(roles);
                         break;
-                    case "books":
-                        Set<Long> bookIds = (Set<Long>) value;
-                        Set<Book> books = new HashSet<>(bookRepository.findAllById(bookIds));
-                        user.setBooks(books);
+                    case "copy":
+                        Set<Long> copyIds = (Set<Long>) value;
+                        Set<Copy> copys = new HashSet<>(copyRepository.findAllById(copyIds));
+                        user.setCopys(copys);
                         break;
                 }
             });

@@ -28,4 +28,5 @@ public class Book {
     private Set<Genre> genres;
 
     private String publicationDate;
+
 }

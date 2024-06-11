@@ -1,5 +1,6 @@
 package fr.epsi.biblio.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,9 +28,15 @@ public class User {
     private String email;
     private String phone;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany
-    private Set<Book> books = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Copy> copys = new HashSet<>();
 }

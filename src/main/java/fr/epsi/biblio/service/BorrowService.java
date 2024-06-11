@@ -2,8 +2,8 @@ package fr.epsi.biblio.service;
 
 
 import fr.epsi.biblio.entity.Borrow;
-import fr.epsi.biblio.repository.BookRepository;
 import fr.epsi.biblio.repository.BorrowRepository;
+import fr.epsi.biblio.repository.CopyRepository;
 import fr.epsi.biblio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class BorrowService {
     @Autowired
     private BorrowRepository borrowRepository;
     @Autowired
-    private BookRepository bookRepository;
+    private CopyRepository copyRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -33,7 +33,7 @@ public class BorrowService {
     public Optional<Borrow> updateBorrow(Long id, Borrow updatedBorrow) {
         return borrowRepository.findById(id).map(borrow -> {
             borrow.setUser(updatedBorrow.getUser());
-            borrow.setBook(updatedBorrow.getBook());
+            borrow.setCopy(updatedBorrow.getCopy());
             borrow.setGivenBack(updatedBorrow.isGivenBack());
             return borrowRepository.save(borrow);
         });
@@ -47,9 +47,9 @@ public class BorrowService {
                         Long userId = ((Number) value).longValue();
                         userRepository.findById(userId).ifPresent(borrow::setUser);
                         break;
-                    case "book":
-                        Long bookId = ((Number) value).longValue();
-                        bookRepository.findById(bookId).ifPresent(borrow::setBook);
+                    case "copy":
+                        Long copyId = ((Number) value).longValue();
+                        copyRepository.findById(copyId).ifPresent(borrow::setCopy);
                         break;
                     case "givenBack":
                         borrow.setGivenBack((Boolean) value);
