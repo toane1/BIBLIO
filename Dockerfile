@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copier le fichier JAR généré dans le conteneur
-COPY ../target/biblio-0.0.1-SNAPSHOT.jar /app/biblio.jar
+COPY target/biblio-0.0.1-SNAPSHOT.jar /app/biblio.jar
 
 
 # Exposer le port 8080
