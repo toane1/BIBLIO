@@ -10,4 +10,4 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/biblio-0.0.1-SNAPSHOT.jar biblio.jar
 EXPOSE 8080
-CMD ["java", "-jar", "myapp.jar"]
+CMD ["java", "-jar", "biblio-0.0.1-SNAPSHOT.jar"]
