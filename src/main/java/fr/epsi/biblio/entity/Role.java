@@ -1,6 +1,7 @@
 package fr.epsi.biblio.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,6 +19,6 @@ public class Role {
     private String name; // ADMIN, USER
 
     @ManyToMany(mappedBy = "roles")
-    @JsonBackReference
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 }
