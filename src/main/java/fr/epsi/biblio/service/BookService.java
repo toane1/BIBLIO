@@ -30,8 +30,14 @@ public class BookService {
         return bookRepository.findById(id);
     }
     public List<Book> findByGenreId(Long genreId) {
-        Set<Genre> genres = (Set<Genre>) genreRepository.findByGenreId(genreId);
-        return bookRepository.findBookByGenres(genres);
+        List<Book> books = bookRepository.findAll();
+        List<Book> booksAnswer = new ArrayList<>();
+        for (Book book : books){
+            if(book.getGenres().stream().anyMatch(genre -> Objects.equals(genre.getGenreId(), genreId))){
+                booksAnswer.add(book);
+            }
+        }
+        return booksAnswer;
     }
     public Optional<Book> updateBook(Long id, Book updatedBook) {
         return bookRepository.findById(id).map(book -> {

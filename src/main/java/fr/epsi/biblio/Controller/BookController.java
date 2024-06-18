@@ -48,7 +48,7 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Book> patchAuthor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Book> patchBook(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return bookService.patchBook(id, updates)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
