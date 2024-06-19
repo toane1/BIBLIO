@@ -1,10 +1,12 @@
 package fr.epsi.biblio.Controller;
 
 
+import fr.epsi.biblio.Exceptions.AuthorInUseException;
 import fr.epsi.biblio.entity.Author;
 
 import fr.epsi.biblio.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +56,10 @@ public class AuthorController {
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(AuthorInUseException.class)
+    public ResponseEntity<String> handleAuthorInUseException(AuthorInUseException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

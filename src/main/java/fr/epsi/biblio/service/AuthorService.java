@@ -1,19 +1,23 @@
 package fr.epsi.biblio.service;
 
 
+import fr.epsi.biblio.Exceptions.AuthorInUseException;
 import fr.epsi.biblio.entity.Author;
+import fr.epsi.biblio.entity.Book;
 import fr.epsi.biblio.repository.AuthorRepository;
+import fr.epsi.biblio.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
@@ -50,6 +54,14 @@ public class AuthorService {
         });
     }
     public void deleteAuthor(Long id) {
+        List<Book> books = bookRepository.findAll();
+        for (Book book : books){
+            if(Objects.equals(book.getAuthor().getAuthorId(), id)){
+                throw new AuthorInUseException("L'auteur " + book.getAuthor().getLastName()
+                        + " " + book.getAuthor().getFirstName() + " ne peut être supprimé car il est référencé dans au moins 1 livre ("+
+                        book.getTitle()+")");
+            }
+        }
         authorRepository.deleteById(id);
     }
 }

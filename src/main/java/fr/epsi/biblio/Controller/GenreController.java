@@ -1,8 +1,10 @@
 package fr.epsi.biblio.Controller;
 
+import fr.epsi.biblio.Exceptions.GenreInUseException;
 import fr.epsi.biblio.entity.Genre;
 import fr.epsi.biblio.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +53,10 @@ public class GenreController {
     public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
         genreService.deleteGenre(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(GenreInUseException.class)
+    public ResponseEntity<String> handleGenreInUseException(GenreInUseException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 }

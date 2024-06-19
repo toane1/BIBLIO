@@ -1,12 +1,16 @@
 package fr.epsi.biblio.service;
 
 
+import fr.epsi.biblio.Exceptions.GenreInUseException;
+import fr.epsi.biblio.entity.Book;
 import fr.epsi.biblio.entity.Genre;
+import fr.epsi.biblio.repository.BookRepository;
 import fr.epsi.biblio.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Map;
 
@@ -15,6 +19,9 @@ public class GenreService {
 
     @Autowired
     private GenreRepository genreRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     public List<Genre> getAllGenres() {
         return genreRepository.findAll();
@@ -47,6 +54,14 @@ public class GenreService {
     }
 
     public void deleteGenre(Long id) {
-        genreRepository.deleteById(id);
+
+        List<Book> books = bookRepository.findAll();
+        for (Book book : books){
+            if(book.getGenres().stream().anyMatch(genre -> Objects.equals(genre.getGenreId(), id))){
+                throw new GenreInUseException("Le genre \"" + getGenreById(id).orElse(new Genre()).getGenre()
+                        + "\" ne peut être supprimé car il est référencé dans au moins 1 livre ("+
+                        book.getTitle()+")");
+            }
+        }genreRepository.deleteById(id);
     }
 }
